@@ -1,0 +1,8 @@
+---
+- ansible.builtin.include_tasks: "{{ role_path }}/tasks/fail2ban.yml"
+  when: system_security_fail2ban_enabled | bool
+  tags:
+    - setup-all
+    - setup-fail2ban
+    - install-all
+    - install-fail2ban
