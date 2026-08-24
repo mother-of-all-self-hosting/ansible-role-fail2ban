@@ -12,6 +12,15 @@ repos:
         entry: Do not commit files with the .orig extension
         language: fail
         files: '[.]orig$'
+      # Unlike in most roles in this fleet, defaults/main.yml is not an input
+      # to the tag computation here - there is no version variable to read -
+      # so a change to it cannot affect the outcome and does not run the tests.
+      - id: test-compute-next-tag
+        name: test the next-tag computation
+        entry: bash bin/test-compute-next-tag.sh
+        language: system
+        pass_filenames: false
+        files: '^bin/(compute-next-tag|test-compute-next-tag)[.]sh$'
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v6.0.0
     hooks:
