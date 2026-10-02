@@ -61,4 +61,8 @@ Refer to [this page](./molecule/README.md) for details about how to utilize it.
 
 ### Releases
 
-Pushing to `main` tags a release automatically, if the commit changed anything under `defaults/`, `handlers/`, `meta/`, `tasks/` or `templates/`. Tags look like `v1.0.0-1`: the version half is a statement about this role's own interface and only a human changes it (by tagging, say, `v2.0.0-0` by hand), while the release counter after the dash is incremented automatically. See [`bin/compute-next-tag.sh`](bin/compute-next-tag.sh) for the full reasoning.
+Tags are computed from the state of the repository rather than from commit messages: [`bin/compute-next-tag.sh`](bin/compute-next-tag.sh) continues the release series of the newest existing tag whenever a commit touches `defaults/`, `handlers/`, `meta/`, `tasks/` or `templates/`, and the [autotag workflow](.github/workflows/autotag.yml) pushes the result. Commits which only touch documentation, CI configuration or the test suite are not released.
+
+This role deploys no software and so has no version of its own; the version component of the tags is a number chosen by hand. To open a new series — for a breaking change to the role's variables, say — tag one commit as `v2.0.0-0` by hand, and everything after it continues from there.
+
+[`bin/test-compute-next-tag.sh`](bin/test-compute-next-tag.sh) exercises that script against throwaway repositories, and runs as a prek hook.
