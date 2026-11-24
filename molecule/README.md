@@ -50,7 +50,7 @@ Currently these testing scenarios are available:
 
 ### `default`
 
-Starts from a container with no intrusion prevention at all — `prepare.yml` asserts that fail2ban is not installed — and lets the role install it, write `jail.local` and start the daemon.
+Starts from a container with no intrusion prevention at all — `prepare.yml` asserts that fail2ban is not installed — and lets the role install it, write `jail.local` and custom filter/jail templates, validate the configuration and start the daemon.
 
 Verification does not stop at "the unit is active", which `Restart=always` would say about a daemon in a crash loop and which is true of a `fail2ban-server` whose jails have all failed to start. Instead it asks the running server, over its own socket, what it understood: which jails it started, which port the `sshd` jail bans on, which addresses it ignores, and whether ban-time escalation is on.
 

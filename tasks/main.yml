@@ -23,6 +23,46 @@
         mode: "0644"
       notify: Restart fail2ban
 
+    - name: Ensure custom fail2ban filters are present
+      ansible.builtin.template:
+        src: "{{ item.path }}"
+        dest: "/etc/fail2ban/filter.d/{{ item.name }}"
+        owner: root
+        group: root
+        mode: "0644"
+      loop: "{{ system_security_fail2ban_filter_template_files }}"
+      loop_control:
+        label: "{{ item.name }}"
+      notify: Restart fail2ban
+
+    - name: Ensure custom fail2ban jails are present
+      ansible.builtin.template:
+        src: "{{ item.path }}"
+        dest: "/etc/fail2ban/jail.d/{{ item.name }}"
+        owner: root
+        group: root
+        mode: "0644"
+      loop: "{{ system_security_fail2ban_jail_template_files }}"
+      loop_control:
+        label: "{{ item.name }}"
+      notify: Restart fail2ban
+
+    - name: Ensure custom fail2ban actions are present
+      ansible.builtin.template:
+        src: "{{ item.path }}"
+        dest: "/etc/fail2ban/action.d/{{ item.name }}"
+        owner: root
+        group: root
+        mode: "0644"
+      loop: "{{ system_security_fail2ban_action_template_files }}"
+      loop_control:
+        label: "{{ item.name }}"
+      notify: Restart fail2ban
+
+    - name: Validate fail2ban configuration
+      ansible.builtin.command: fail2ban-client -t
+      changed_when: false
+
     - name: Ensure fail2ban started and running
       ansible.builtin.service:
         state: started

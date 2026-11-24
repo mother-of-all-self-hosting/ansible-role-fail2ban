@@ -23,6 +23,21 @@
           ({{ fail2ban_service.status.UnitFileState }})
         success_msg: fail2ban.service is active and enabled
 
+    - name: Check custom fail2ban templates were installed
+      ansible.builtin.stat:
+        path: "{{ item }}"
+      loop:
+        - /etc/fail2ban/filter.d/molecule-custom.conf
+        - /etc/fail2ban/jail.d/molecule-custom.local
+        - /etc/fail2ban/action.d/molecule-custom-action.conf
+      register: fail2ban_custom_files
+
+    - name: Assert custom fail2ban templates were installed
+      ansible.builtin.assert:
+        that: item.stat.exists
+        fail_msg: "Custom fail2ban template was not installed: {{ item.item }}"
+      loop: "{{ fail2ban_custom_files.results }}"
+
     # systemd calling a unit active only means its main process has not
     # exited. fail2ban-server can sit there with every jail failed, so the
     # server is asked over its own socket whether it is actually answering.

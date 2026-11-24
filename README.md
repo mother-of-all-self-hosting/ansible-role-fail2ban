@@ -11,7 +11,7 @@ This is an [Ansible](https://www.ansible.com/) role which manages [fail2ban](htt
 
 Unlike most other roles in this collection, this one does not run a container. It installs the `fail2ban` package from the distribution's package repository, writes `/etc/fail2ban/jail.local` and runs the daemon on the host itself. There is no version to pin: whichever fail2ban the distribution ships is the one you get.
 
-Out of the box the role enables fail2ban's `sshd` jail and nothing else. Everything beyond that goes into `system_security_fail2ban_configuration_extension`, which is appended verbatim to `jail.local`, so any jail, filter or action fail2ban understands can be configured through it.
+Out of the box the role enables fail2ban's `sshd` jail and nothing else. Inline jail settings go in `system_security_fail2ban_configuration_extension`; custom filter, jail and action files can be installed from Ansible templates.
 
 On Debian and Ubuntu, fail2ban bans through `nftables` and the `sshd` jail reads the systemd journal. Both are the distribution package's own defaults, not something this role sets.
 
@@ -36,6 +36,24 @@ On Debian and Ubuntu, fail2ban bans through `nftables` and the `sshd` jail reads
 - `system_security_fail2ban_configuration_extension` (string, default: `''`)
 
   Appended to `/etc/fail2ban/jail.local` as-is. Use it to enable additional jails or to override anything fail2ban puts in `[DEFAULT]`.
+
+- `system_security_fail2ban_filter_template_files`, `system_security_fail2ban_jail_template_files` and `system_security_fail2ban_action_template_files` (lists, default: `[]`)
+
+  Install Ansible templates from the controller into `/etc/fail2ban/filter.d/`, `/etc/fail2ban/jail.d/` and `/etc/fail2ban/action.d/`. Each item has `path` (template source) and `name` (destination filename, including extension). For example:
+
+  ```yaml
+  system_security_fail2ban_filter_template_files:
+    - path: /path/to/filters/myapp.conf.j2
+      name: myapp.conf
+  system_security_fail2ban_jail_template_files:
+    - path: /path/to/jails/myapp.local.j2
+      name: myapp.local
+  system_security_fail2ban_action_template_files:
+    - path: /path/to/actions/myaction.conf.j2
+      name: myaction.conf
+  ```
+
+  Files are validated with `fail2ban-client -t`; changes restart fail2ban. Removing an item does not delete its previously installed file.
 
 Check [`defaults/main.yml`](defaults/main.yml) for the full list of supported options.
 

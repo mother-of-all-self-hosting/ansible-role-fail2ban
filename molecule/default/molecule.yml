@@ -81,6 +81,15 @@ provisioner:
           maxretry = 3
           findtime = 600
           bantime  = 600
+        system_security_fail2ban_filter_template_files:
+          - path: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') }}/molecule/default/files/molecule-custom.conf.j2"
+            name: molecule-custom.conf
+        system_security_fail2ban_jail_template_files:
+          - path: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') }}/molecule/default/files/molecule-custom.local.j2"
+            name: molecule-custom.local
+        system_security_fail2ban_action_template_files:
+          - path: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') }}/molecule/default/files/molecule-custom-action.conf.j2"
+            name: molecule-custom-action.conf
   env:
     # Workaround for https://github.com/ansible/molecule/issues/4391
     ANSIBLE_ROLES_PATH: ${MOLECULE_PROJECT_DIRECTORY}/..:/.ansible/roles:/usr/share/ansible/roles:/etc/ansible/roles:~/.ansible/roles
