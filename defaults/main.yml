@@ -19,3 +19,8 @@ system_security_fail2ban_bantime_increment: true
 
 # custom configuration
 system_security_fail2ban_configuration_extension: ''
+
+# Template files installed into fail2ban's filter.d and jail.d directories.
+system_security_fail2ban_filter_template_files: []
+system_security_fail2ban_jail_template_files: []
+system_security_fail2ban_action_template_files: []
